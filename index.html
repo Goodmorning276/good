@@ -1,27 +1,61 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gif and Geolocation</title>
+    <style>
+        body {
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        iframe {
+            margin-top: 20px;
+        }
+        #location-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body onload="getLocation()">
-<iframe src="https://giphy.com/embed/jle0nmfHz4YHxsOc6d" width="480" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/Penguclips-love-good-morning-gm-jle0nmfHz4YHxsOc6d">via GIPHY</a></p>
+    <!-- Display the GIF -->
+    <iframe src="https://giphy.com/embed/5JsYK5W1g1lII" width="480" height="358" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    
+    <p><a href="https://giphy.com/gifs/rays-5JsYK5W1g1lII" target="_blank">via GIPHY</a></p>
 
+    <!-- Div to display IP and location info -->
+    <div id="location-info">
+        <p id="ip"></p>
+        <p id="location"></p>
+    </div>
 
-<p id="demo"></p>
-<script>
-var x = document.getElementById("demo");
+    <script>
+        // Function to get the user's location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
+        // Display the location
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
 
-function showPosition(position) {
-  const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "store.php?lat=" + position.coords.latitude + "&long=" + position.coords.longitude);
-  xhttp.send();
-}
-</script>
+            // Display Latitude and Longitude
+            document.getElementById("location").innerHTML = `Latitude: ${lat}, Longitude: ${lon}`;
 
+            // Fetch the IP address using an external API (ipify)
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ip = data.ip;
+                    document.getElementById("ip").innerHTML = `IP Address: ${ip}`;
+                })
+                .catch(error => console.log('Error fetching IP address:', error));
+        }
+    </script>
 </body>
 </html>
